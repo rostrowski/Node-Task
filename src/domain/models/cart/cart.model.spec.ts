@@ -1,5 +1,5 @@
-import { CartModel } from './cart/cart.model';
-import { ProductModel } from './product.model';
+import { CartModel } from './cart.model';
+import { ProductModel } from '../product.model';
 
 const sampleProduct: ProductModel = {
   name: 'test product',
