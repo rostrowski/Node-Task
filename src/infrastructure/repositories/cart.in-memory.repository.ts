@@ -3,11 +3,13 @@ import { CartModel } from '../../domain/models/cart/cart.model';
 import { Injectable } from '@nestjs/common';
 import { CheckedOutCartModel } from '../../domain/models/cart/checked-out-cart.model';
 
-type CartInMemoryStorage = { [id: string]: CartModel };
+interface CartInMemoryStorage {
+  [id: string]: CartModel;
+}
 
 @Injectable()
 export class CartInMemoryRepository implements CartRepository {
-  private readonly carts: CartInMemoryStorage = {}
+  private readonly carts: CartInMemoryStorage = {};
   private readonly checkedOutCarts: CheckedOutCartModel[] = [];
 
   async saveCart(cart: CartModel) {

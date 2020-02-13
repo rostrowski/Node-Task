@@ -12,9 +12,13 @@ import { EmptyCartCheckoutError } from '../errors/empty-cart-checkout.error';
 
 @Injectable()
 export class CartService {
-  constructor (@Inject('CartRepository') private readonly cartRepository: CartRepository,
-    @Inject('ProductRepository') private readonly productRepository: ProductRepository,
-    @Inject('CurrencyRatesRepository') private readonly currencyRatesRepository: CurrencyRatesRepository) {}
+  constructor(
+    @Inject('CartRepository') private readonly cartRepository: CartRepository,
+    @Inject('ProductRepository')
+    private readonly productRepository: ProductRepository,
+    @Inject('CurrencyRatesRepository')
+    private readonly currencyRatesRepository: CurrencyRatesRepository,
+  ) {}
 
   async createNew() {
     const cart = new CartModel();
@@ -41,7 +45,9 @@ export class CartService {
     }
 
     if (product.quantity < quantity) {
-      throw new NotEnoughProductsInStockError(`Not enough products with id ${productId}. Got ${product.quantity}, requested ${quantity}.`)
+      throw new NotEnoughProductsInStockError(
+        `Not enough products with id ${productId}. Got ${product.quantity}, requested ${quantity}.`,
+      );
     }
 
     cart.addProduct({ ...product, quantity });
@@ -50,7 +56,11 @@ export class CartService {
     return cart;
   }
 
-  async removeProductFromCart(cartId: string, productId: string, quantity: number) {
+  async removeProductFromCart(
+    cartId: string,
+    productId: string,
+    quantity: number,
+  ) {
     const cart = await this.getCart(cartId);
 
     const actuallyRemovedCount = cart.removeProduct(productId, quantity);
@@ -59,7 +69,10 @@ export class CartService {
     return cart;
   }
 
-  async checkout(cartId: string, currency: string): Promise<CheckedOutCartModel> {
+  async checkout(
+    cartId: string,
+    currency: string,
+  ): Promise<CheckedOutCartModel> {
     const cart = await this.getCart(cartId);
 
     const cartProducts = cart.getProducts();
@@ -79,7 +92,7 @@ export class CartService {
     await Promise.all([
       this.cartRepository.removeCart(cartId),
       this.cartRepository.saveCheckedOutCart(checkedOutCart),
-    ])
+    ]);
 
     return checkedOutCart;
   }
@@ -98,4 +111,4 @@ export class CartService {
 
     return cartModel;
   }
-} 
+}

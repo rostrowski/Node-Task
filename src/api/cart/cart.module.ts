@@ -12,24 +12,34 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [CartController],
-  providers: [CartService, CartApplicationService, ConfigService, {
-    provide: 'CartRepository',
-    useClass: CartInMemoryRepository,
-  }, {
-    provide: 'API_URL',
-    useValue: process.env.CURRENCY_RATES_API_URL,
-  }, {
-    provide: 'ProductRepository',
-    useClass: ProductInMemoryRepository,
-  }, {
-    provide: 'CurrencyRatesRepository',
-    useClass: CurrencyRatesInMemoryCacheRepository,
-  }, {
-    provide: 'getCurrentDate',
-    useValue: DateProvider,
-  }, {
-    provide: 'CurrencyRatesProvider',
-    useClass: CurrencyRatesClient,
-  }],
+  providers: [
+    CartService,
+    CartApplicationService,
+    ConfigService,
+    {
+      provide: 'CartRepository',
+      useClass: CartInMemoryRepository,
+    },
+    {
+      provide: 'API_URL',
+      useValue: process.env.CURRENCY_RATES_API_URL,
+    },
+    {
+      provide: 'ProductRepository',
+      useClass: ProductInMemoryRepository,
+    },
+    {
+      provide: 'CurrencyRatesRepository',
+      useClass: CurrencyRatesInMemoryCacheRepository,
+    },
+    {
+      provide: 'getCurrentDate',
+      useValue: DateProvider,
+    },
+    {
+      provide: 'CurrencyRatesProvider',
+      useClass: CurrencyRatesClient,
+    },
+  ],
 })
 export class CartModule {}

@@ -1,19 +1,26 @@
 import { CurrencyRatesRepository } from '../../domain/repositories/currency-rates.repository';
-import { CurrencyExchangeRates, CurrencyRatesProvider } from '../../domain/currencies/currencies.provider.types';
+import {
+  CurrencyExchangeRates,
+  CurrencyRatesProvider,
+} from '../../domain/currencies/currencies.provider.types';
 import date from 'date-and-time';
 import { GetCurrentDate } from '../../shared/date/date-provider.type';
 import { Inject } from '@nestjs/common';
 
-type CachedRates = {
-  rates: CurrencyExchangeRates,
-  date: Date,
+interface CachedRates {
+  rates: CurrencyExchangeRates;
+  date: Date;
 }
 
-export class CurrencyRatesInMemoryCacheRepository implements CurrencyRatesRepository {
+export class CurrencyRatesInMemoryCacheRepository
+  implements CurrencyRatesRepository {
   private cachedRates: CachedRates;
 
-  constructor (@Inject('CurrencyRatesProvider') private readonly currenciesProvider: CurrencyRatesProvider, 
-    @Inject('getCurrentDate') private readonly getCurrentDate: GetCurrentDate) {}
+  constructor(
+    @Inject('CurrencyRatesProvider')
+    private readonly currenciesProvider: CurrencyRatesProvider,
+    @Inject('getCurrentDate') private readonly getCurrentDate: GetCurrentDate,
+  ) {}
 
   async getLatestCurrencyRates(): Promise<CurrencyExchangeRates> {
     const now = this.getCurrentDate();

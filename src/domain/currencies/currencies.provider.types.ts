@@ -1,13 +1,13 @@
-type ExchangeRate = {
+interface ExchangeRate {
   [key: string]: number;
 }
 
-export type CurrencyExchangeRates = {
+export interface CurrencyExchangeRates {
   rates: ExchangeRate;
   baseCurrency: string;
-  date: Date,
+  date: Date;
 }
 
 export interface CurrencyRatesProvider {
-  getRates() : Promise<CurrencyExchangeRates> 
+  getRates(): Promise<CurrencyExchangeRates>;
 }

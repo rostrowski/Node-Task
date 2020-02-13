@@ -8,37 +8,49 @@ describe('Cart service tests.', () => {
   it('Throw `EntityNotFound` error when cart was not found', () => {
     // arrange
     const cartRepository = {
-      findCart: jest.fn().mockReturnValue(Promise.resolve(undefined))
-    }
+      findCart: jest.fn().mockReturnValue(Promise.resolve(undefined)),
+    };
 
-    const sut = new CartService(cartRepository as any, jest.fn() as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      jest.fn() as any,
+      jest.fn() as any,
+    );
 
     // act and assert
-    expect(sut.addProductToCart('1', '1', 1)).rejects.toThrow(EntityNotFoundError);
-  })
+    expect(sut.addProductToCart('1', '1', 1)).rejects.toThrow(
+      EntityNotFoundError,
+    );
+  });
 
   it('Throw `EntityNotFound` error when product was not found', async () => {
     // arrange
     const cartRepository = {
-      findCart: jest.fn().mockReturnValue(Promise.resolve({ id: 1 }))
-    }
+      findCart: jest.fn().mockReturnValue(Promise.resolve({ id: 1 })),
+    };
 
     const productRepository = {
-      findProduct: jest.fn().mockReturnValue(Promise.resolve(undefined))
-    }
+      findProduct: jest.fn().mockReturnValue(Promise.resolve(undefined)),
+    };
 
-    const sut = new CartService(cartRepository as any, productRepository as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      productRepository as any,
+      jest.fn() as any,
+    );
 
     // act and assert
-    await expect(sut.addProductToCart('1', '1', 1)).rejects.toThrow(EntityNotFoundError);
+    await expect(sut.addProductToCart('1', '1', 1)).rejects.toThrow(
+      EntityNotFoundError,
+    );
     expect(productRepository.findProduct).toHaveBeenCalled();
-  })
+  });
 
   it('Throw `NotEnoughProductsInStock` error when not enough products in stock.', async () => {
     // arrange
     const cartRepository = {
-      findCart: jest.fn().mockReturnValue(Promise.resolve({ id: 1 }))
-    }
+      findCart: jest.fn().mockReturnValue(Promise.resolve({ id: 1 })),
+    };
 
     const sampleProduct: ProductModel = {
       name: 'test product',
@@ -48,17 +60,23 @@ describe('Cart service tests.', () => {
         currency: 'EUR',
       },
       quantity: 1,
-    }
+    };
 
     const productRepository = {
-      findProduct: jest.fn().mockReturnValue(Promise.resolve(sampleProduct))
-    }
+      findProduct: jest.fn().mockReturnValue(Promise.resolve(sampleProduct)),
+    };
 
-    const sut = new CartService(cartRepository as any, productRepository as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      productRepository as any,
+      jest.fn() as any,
+    );
 
     // act and assert
-    await expect(sut.addProductToCart('1', '1', 2)).rejects.toThrow(NotEnoughProductsInStockError);
-  })
+    await expect(sut.addProductToCart('1', '1', 2)).rejects.toThrow(
+      NotEnoughProductsInStockError,
+    );
+  });
 
   it('Adds a product to cart.', async () => {
     // arrange
@@ -66,7 +84,7 @@ describe('Cart service tests.', () => {
 
     const cartRepository = {
       findCart: jest.fn().mockReturnValue(Promise.resolve(cart)),
-    }
+    };
 
     const sampleProduct: ProductModel = {
       name: 'test product',
@@ -76,22 +94,26 @@ describe('Cart service tests.', () => {
         currency: 'EUR',
       },
       quantity: 2,
-    }
+    };
 
     const productRepository = {
       findProduct: jest.fn().mockReturnValue(Promise.resolve(sampleProduct)),
       removeProduct: jest.fn(),
-    }
+    };
 
-    const sut = new CartService(cartRepository as any, productRepository as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      productRepository as any,
+      jest.fn() as any,
+    );
 
     // act
     await sut.addProductToCart('1', '1', 2);
 
     // assert
-    expect(cart.getProducts()).toStrictEqual([ sampleProduct ]);
+    expect(cart.getProducts()).toStrictEqual([sampleProduct]);
     expect(productRepository.removeProduct).toHaveBeenCalled();
-  })
+  });
 
   it('Removes products from cart.', async () => {
     // arrange
@@ -100,7 +122,7 @@ describe('Cart service tests.', () => {
 
     const cartRepository = {
       findCart: jest.fn().mockReturnValue(Promise.resolve(cart)),
-    }
+    };
 
     const sampleProduct: ProductModel = {
       name: 'test product',
@@ -110,24 +132,30 @@ describe('Cart service tests.', () => {
         currency: 'EUR',
       },
       quantity: 2,
-    }
+    };
 
     const productRepository = {
       findProduct: jest.fn().mockReturnValue(Promise.resolve(sampleProduct)),
       removeProduct: jest.fn(),
       addProduct: jest.fn(),
-    }
+    };
 
-    const sut = new CartService(cartRepository as any, productRepository as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      productRepository as any,
+      jest.fn() as any,
+    );
 
     // act
     await sut.addProductToCart('1', productId, 2);
     await sut.removeProductFromCart('1', productId, 1);
 
     // assert
-    expect(cart.getProducts()).toStrictEqual([ { ...sampleProduct, quantity: 1 } ]);
+    expect(cart.getProducts()).toStrictEqual([
+      { ...sampleProduct, quantity: 1 },
+    ]);
     expect(productRepository.addProduct).toHaveBeenCalledWith(productId, 1);
-  })
+  });
 
   it('It is impossible to checkout an empty cart.', async () => {
     // arrange
@@ -135,13 +163,17 @@ describe('Cart service tests.', () => {
 
     const cartRepository = {
       findCart: jest.fn().mockReturnValue(Promise.resolve(cart)),
-    }
+    };
 
-    const sut = new CartService(cartRepository as any, jest.fn() as any, jest.fn() as any);
+    const sut = new CartService(
+      cartRepository as any,
+      jest.fn() as any,
+      jest.fn() as any,
+    );
 
     // act and assert
     expect(sut.checkout('1', 'USD')).rejects.toThrow(EmptyCartCheckoutError);
-  })
+  });
 
   it('Returns a checked out cart.', async () => {
     // arrange
@@ -151,11 +183,11 @@ describe('Cart service tests.', () => {
 
     const exchangeRates = {
       rates: {
-        'PLN': 4
+        PLN: 4,
       },
       baseCurrency: 'EUR',
       date: new Date(),
-    }
+    };
 
     const sampleProduct: ProductModel = {
       name: 'test product',
@@ -165,7 +197,7 @@ describe('Cart service tests.', () => {
         currency: 'EUR',
       },
       quantity: 2,
-    }
+    };
 
     cart.products = { productId: sampleProduct };
 
@@ -173,21 +205,28 @@ describe('Cart service tests.', () => {
       findCart: jest.fn().mockReturnValue(Promise.resolve(cart)),
       saveCheckedOutCart: jest.fn(),
       removeCart: jest.fn(),
-    }
+    };
 
     const exchangeRatesRepository = {
-      getLatestCurrencyRates: jest.fn().mockReturnValue(exchangeRates)
-    }
+      getLatestCurrencyRates: jest.fn().mockReturnValue(exchangeRates),
+    };
 
-    const sut = new CartService(cartRepository as any, jest.fn() as any, exchangeRatesRepository as any);
+    const sut = new CartService(
+      cartRepository as any,
+      jest.fn() as any,
+      exchangeRatesRepository as any,
+    );
 
     // act
     const checkedOutCart = await sut.checkout('1', checkoutCurrency);
 
     // assert
-    expect(checkedOutCart.price).toStrictEqual({ currency: checkoutCurrency, amount: 200 });
-    
+    expect(checkedOutCart.price).toStrictEqual({
+      currency: checkoutCurrency,
+      amount: 200,
+    });
+
     expect(cartRepository.saveCheckedOutCart).toHaveBeenCalled();
     expect(cartRepository.removeCart).toHaveBeenCalled();
-  })
-})
+  });
+});

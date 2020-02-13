@@ -2,34 +2,38 @@ import { CurrencyExchangeRates } from '../../domain/currencies/currencies.provid
 import { CurrencyRatesInMemoryCacheRepository } from './carrency-rates-cache.in-memory.repository';
 
 const makeSampleExchangeRates = (date: Date): CurrencyExchangeRates => ({
-    rates: {
-      'PLN': 1.2,
-      'EUR': 3
-    },
-    baseCurrency: 'EUR',
-    date,
-  })
-
+  rates: {
+    PLN: 1.2,
+    EUR: 3,
+  },
+  baseCurrency: 'EUR',
+  date,
+});
 
 describe.only('Currencies provider client tests.', () => {
   it('Should obtain rates when cache is empty.', async () => {
     // arrange
     const sampleExchangeRates = makeSampleExchangeRates(new Date());
     const mockedRatesProvider = {
-      getRates: jest.fn()
-    }
+      getRates: jest.fn(),
+    };
 
-    mockedRatesProvider.getRates.mockReturnValue(Promise.resolve(sampleExchangeRates));
+    mockedRatesProvider.getRates.mockReturnValue(
+      Promise.resolve(sampleExchangeRates),
+    );
 
     const now = new Date();
-    const sut = new CurrencyRatesInMemoryCacheRepository(mockedRatesProvider, () => now)
+    const sut = new CurrencyRatesInMemoryCacheRepository(
+      mockedRatesProvider,
+      () => now,
+    );
 
     // act
     const result = await sut.getLatestCurrencyRates();
 
     // assert
-   expect(mockedRatesProvider.getRates).toHaveBeenCalledTimes(1);
-   expect(result).toStrictEqual(sampleExchangeRates);
+    expect(mockedRatesProvider.getRates).toHaveBeenCalledTimes(1);
+    expect(result).toStrictEqual(sampleExchangeRates);
   });
 
   it('Should return cached rates when date has not changed.', async () => {
@@ -38,12 +42,17 @@ describe.only('Currencies provider client tests.', () => {
 
     const sampleExchangeRates = makeSampleExchangeRates(now);
     const mockedRatesProvider = {
-      getRates: jest.fn()
-    }
+      getRates: jest.fn(),
+    };
 
-    mockedRatesProvider.getRates.mockReturnValue(Promise.resolve(sampleExchangeRates));
+    mockedRatesProvider.getRates.mockReturnValue(
+      Promise.resolve(sampleExchangeRates),
+    );
 
-    const sut = new CurrencyRatesInMemoryCacheRepository(mockedRatesProvider, () => now)
+    const sut = new CurrencyRatesInMemoryCacheRepository(
+      mockedRatesProvider,
+      () => now,
+    );
 
     // act
     const firstResult = await sut.getLatestCurrencyRates();
@@ -54,7 +63,7 @@ describe.only('Currencies provider client tests.', () => {
 
     expect(firstResult).toStrictEqual(sampleExchangeRates);
     expect(secondResult).toStrictEqual(sampleExchangeRates);
-  })
+  });
 
   it('Should refresh cache when date has changed.', async () => {
     // arrange
@@ -66,16 +75,26 @@ describe.only('Currencies provider client tests.', () => {
     getDate.mockReturnValueOnce(dayAfter);
 
     const sampleExchangeRates = makeSampleExchangeRates(now);
-    const newerExchangeRates = { ...makeSampleExchangeRates(dayAfter), baseCurrency: 'USD' }
+    const newerExchangeRates = {
+      ...makeSampleExchangeRates(dayAfter),
+      baseCurrency: 'USD',
+    };
 
     const mockedRatesProvider = {
-      getRates: jest.fn()
-    }
+      getRates: jest.fn(),
+    };
 
-    mockedRatesProvider.getRates.mockReturnValueOnce(Promise.resolve(sampleExchangeRates));
-    mockedRatesProvider.getRates.mockReturnValueOnce(Promise.resolve(newerExchangeRates));
+    mockedRatesProvider.getRates.mockReturnValueOnce(
+      Promise.resolve(sampleExchangeRates),
+    );
+    mockedRatesProvider.getRates.mockReturnValueOnce(
+      Promise.resolve(newerExchangeRates),
+    );
 
-    const sut = new CurrencyRatesInMemoryCacheRepository(mockedRatesProvider, getDate)
+    const sut = new CurrencyRatesInMemoryCacheRepository(
+      mockedRatesProvider,
+      getDate,
+    );
 
     // act
     const firstResult = await sut.getLatestCurrencyRates();
@@ -86,5 +105,5 @@ describe.only('Currencies provider client tests.', () => {
 
     expect(firstResult).toStrictEqual(sampleExchangeRates);
     expect(secondResult).toStrictEqual(newerExchangeRates);
-  })
+  });
 });

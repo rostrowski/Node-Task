@@ -1,20 +1,22 @@
 import { ProductModel } from '../product.model';
 
-type ProductsById = { [id: string]: ProductModel };
+interface ProductsById {
+  [id: string]: ProductModel;
+}
 
 export class CartModel {
   id: string;
   products: ProductsById = {};
 
   addProduct(newProduct: ProductModel) {
-   const existingProduct = this.products[newProduct.id];
+    const existingProduct = this.products[newProduct.id];
 
-   if (existingProduct) {
-     existingProduct.quantity += newProduct.quantity;
-     this.products[newProduct.id] = existingProduct;
-   } else {
-     this.products[newProduct.id] = Object.assign({}, newProduct);
-   }
+    if (existingProduct) {
+      existingProduct.quantity += newProduct.quantity;
+      this.products[newProduct.id] = existingProduct;
+    } else {
+      this.products[newProduct.id] = Object.assign({}, newProduct);
+    }
   }
 
   removeProduct(productId: string, quantity: number): number {
@@ -23,7 +25,7 @@ export class CartModel {
     }
 
     const productToRemove = Object.assign({}, this.products[productId]);
-   
+
     productToRemove.quantity = Math.max(productToRemove.quantity - quantity, 0);
 
     if (productToRemove.quantity === 0) {

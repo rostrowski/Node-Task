@@ -1,4 +1,4 @@
-import { PriceModel } from "./price.model";
+import { PriceModel } from './price.model';
 
 export class ProductModel {
   id: string;

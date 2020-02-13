@@ -10,7 +10,8 @@ jest.mock('node-fetch');
 
 const API_URL = 'fake_api_url';
 
-const mockFetchResponse = (json: any) => fetch.mockReturnValue(Promise.resolve(new Response(JSON.stringify(json))));
+const mockFetchResponse = (json: any) =>
+  fetch.mockReturnValue(Promise.resolve(new Response(JSON.stringify(json))));
 
 describe('Currencies provider client tests.', () => {
   it('Should return rates successfully obtained from API.', async () => {
@@ -18,7 +19,7 @@ describe('Currencies provider client tests.', () => {
     mockFetchResponse(sampleData);
 
     const sut = new CurrencyRatesClient(API_URL);
-    
+
     // act
     const result = await sut.getRates();
 
@@ -41,10 +42,14 @@ describe('Currencies provider client tests.', () => {
 
   it('Should throw `FailedToObtainCurrenciesError` when API failed.', async () => {
     // arrange
-    fetch.mockReturnValue(Promise.resolve(new Response(JSON.stringify('error'), { status: INTERNAL_SERVER_ERROR })))
+    fetch.mockReturnValue(
+      Promise.resolve(
+        new Response(JSON.stringify('error'), { status: INTERNAL_SERVER_ERROR }),
+      ),
+    );
     const sut = new CurrencyRatesClient(API_URL);
 
     // act and assert
     await expect(sut.getRates()).rejects.toThrow(FailedToObtainCurrenciesError);
-  })
+  });
 });

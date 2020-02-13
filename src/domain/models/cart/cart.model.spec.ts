@@ -9,7 +9,7 @@ const sampleProduct: ProductModel = {
     currency: 'EUR',
   },
   quantity: 1,
-}
+};
 
 describe('Cart model', () => {
   it('Adds a product that wasn`t previously in a cart.', () => {
@@ -21,10 +21,10 @@ describe('Cart model', () => {
 
     // assert
     const productsInCart = sut.getProducts();
-    expect(productsInCart).toStrictEqual([ sampleProduct ]);
+    expect(productsInCart).toStrictEqual([sampleProduct]);
     expect(productsInCart[0]).toStrictEqual(sampleProduct);
     expect(productsInCart[0].quantity).toBe(1);
-  })
+  });
 
   it('Adding another product to cart increases its quantity.', () => {
     // arrange
@@ -37,7 +37,7 @@ describe('Cart model', () => {
     // assert
     const productsInCart = sut.getProducts();
     expect(productsInCart[0].quantity).toBe(2);
-  })
+  });
 
   it('Removing non existing product from cart does nothing.', () => {
     // arrange
@@ -48,10 +48,9 @@ describe('Cart model', () => {
 
     // assert
     const productsInCart = sut.getProducts();
-    console.log(productsInCart)
     expect(productsInCart.length).toBe(0);
     expect(removedProductsCount).toBe(0);
-  })
+  });
 
   it('Removing one of many existing products reduces product`s quantity.', () => {
     // arrange
@@ -66,7 +65,7 @@ describe('Cart model', () => {
     expect(productsInCart.length).toBe(1);
     expect(productsInCart[0].quantity).toBe(1);
     expect(removedProductsCount).toBe(1);
-  })
+  });
 
   it('Removing all instances of one product removes it from cart.', () => {
     // arrange
@@ -78,10 +77,9 @@ describe('Cart model', () => {
 
     // assert
     const productsInCart = sut.getProducts();
-    console.log(productsInCart)
     expect(productsInCart.length).toBe(0);
     expect(removedProductsCount).toBe(1);
-  })
+  });
 
   it('Removing more instances of one product than already in cart removes it from cart.', () => {
     // arrange
@@ -95,5 +93,5 @@ describe('Cart model', () => {
     const productsInCart = sut.getProducts();
     expect(productsInCart.length).toBe(0);
     expect(removedProductsCount).toBe(2);
-  })
-})
+  });
+});

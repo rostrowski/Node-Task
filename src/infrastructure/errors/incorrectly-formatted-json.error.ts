@@ -1,1 +1,1 @@
-export class IncorrectlyFormattedJsonError extends Error { }
+export class IncorrectlyFormattedJsonError extends Error {}

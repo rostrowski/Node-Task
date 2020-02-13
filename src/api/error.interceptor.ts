@@ -1,5 +1,12 @@
-import { NestInterceptor, ExecutionContext, CallHandler, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
-import { Observable } from "rxjs";
+import {
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { EntityNotFoundError } from '../domain/errors/entity-not-found.error';
 import { NotEnoughProductsInStockError } from '../domain/errors/not-enough-products-in-stock.error';
@@ -9,8 +16,8 @@ import { EmptyCartCheckoutError } from '../domain/errors/empty-cart-checkout.err
 // Maps domain errors to HttpException.
 export class ErrorInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle()
-      .pipe(catchError(error => {
+    return next.handle().pipe(
+      catchError(error => {
         if (error instanceof EntityNotFoundError) {
           throw new NotFoundException(error.message);
         } else if (error instanceof NotEnoughProductsInStockError) {
@@ -22,6 +29,7 @@ export class ErrorInterceptor implements NestInterceptor {
         } else {
           throw error;
         }
-      }))
+      }),
+    );
   }
 }
